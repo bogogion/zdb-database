@@ -39,6 +39,7 @@ Types supported:
 Then below the header you have your data. For example:
 
 Test#ID#Text#STR#Number#INT
+
 {1,TestText,5}
 
 **IMPORTANT**
