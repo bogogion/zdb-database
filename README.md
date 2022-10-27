@@ -41,7 +41,7 @@ Then below the header you have your data. For example:
 Test#ID#Text#STR#Number#INT
 {1,TestText,5}
 
-** IMPORTANT **
+**IMPORTANT**
 
 Name and Value Names can only go up to 20 characters currently. And each value in the table has to be less than *255* bytes long!
 
@@ -49,5 +49,5 @@ ID should increment by one based on the line! Do not skip increments or you will
 
 For information on how to parse and use this data see the main.c main() where there is an example.
 
-** HOW TO USE PROGRAM **
+**HOW TO USE PROGRAM**
 Once you have compiled the program via make do ./zdb -i #id. ie. ./zdb -i 4 for the 4th value.
