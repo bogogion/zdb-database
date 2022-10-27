@@ -3,9 +3,12 @@
 #include <stdlib.h>
 #include "main.h"
 
-#define MAX_LINE_LENGTH 255 /* Macro for how long each line in a file can be */
+/*
+	Written by Zane Maples as a side project.
+	All code written here is subject to being stolen, rewritten, and modified for anyone that wants too.
+*/
 
-#define MAX_HEADER_TOKENS 22 /* Maximum tokens in the header e*/
+#define MAX_HEADER_TOKENS 22 /* Maximum tokens in the header */
 #define MAX_TOKEN_LENGTH 20 /* Largest token is NAME */
 
 /* See "main.h" for declaration of structs */
@@ -99,7 +102,8 @@ table_data parse_table_data(char line[],size_t size)
 				memset(temp_token,0,sizeof(temp_token));
 			}
 		} else 
-		{	
+		{
+			/* Add character to token */
 			temp_token[j] = line[i];
 			j = j + 1;
 		}
@@ -112,6 +116,8 @@ long check_id(char line[],size_t size)
 {	
 	/* Check the first element, which should always be ID and compare*/
 	long id;
+
+	/* Token is set to size to prevent a memory overflow vuln causing the program not to compile. */
 	char token[size];
 	for(int i = 1;i<size;i++)
 	{
@@ -131,6 +137,11 @@ int convert_val_usable(table_header theader,table_data *tdata, int no)
 	   This function takes in the data and returns/assigns it based on the type described fo
 	   the value in the header.
 
+	   The data is assigned to the tdata struct passed as an argument
+
+	   The values changed are last_read_{type}
+
+	   See main.h for declaration of this struct.
 	*/
 
 	/* Check if no out of bound*/
@@ -170,6 +181,7 @@ long get_max_id(char file_name[])
 int main(int argc, char *argv[])
 {
 	long search_id = 1; /* Default id */
+
 	/* Simple code for arguments */
 	if(argc == 3){if(strcmp("-i",argv[1])==0 && atol(argv[2]) > 0){ search_id = atol(argv[2]);}}
 	
@@ -184,29 +196,34 @@ int main(int argc, char *argv[])
 	int counter = 0;
 	
 	if(search_id > get_max_id("db/table.tb")){printf("ID not found.\n"); return -1;}
-	
-	/* Flush file buffer */
+
+	/* Loop through lines in file to get required ones */
 	
 	while(fgets(line, 255, file))
 	{
 		if(counter == 0){strcpy(lines[0],line);}
 		if(check_id(line,strlen(line)) == search_id){strcpy(lines[1],line); break;}
 		counter++;
-		//for(int i = 0;i<MAX_LINE_LENGTH;i++){if(line[i] == '#'){line[i]=' ';}}
-		//printf(line);
 	}
+
+	/* Create a table header to parse data later on, the arguments for this should always
+	   be the first line of the table.
+	*/
 
 	table_header theader = parse_table_header_line(lines[0],strlen(lines[0]));
 	
-	/* Test */
+	/* Create a table data struct, both table_header and table_data defined in main.h */
 
 	table_data tdata = parse_table_data(lines[1],strlen(lines[1]));
+	
+	/* Convert values to usable types (type casting)*/
 
 	convert_val_usable(theader,&tdata,1);
 	convert_val_usable(theader,&tdata,2);
 	convert_val_usable(theader,&tdata,3);
 
-	//printf("%s\n",lines[1]);
+	/* Print our data */
+
 	printf("--- %s ---\n",theader.name);
 	printf("Book Id: %i\n",tdata.id);
 	printf("%s: %s\n",theader.val_names[0],tdata.last_read_string);
