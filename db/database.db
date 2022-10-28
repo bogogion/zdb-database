@@ -1,2 +1,2 @@
-#Book Database#ID#TABLE_NAME#STR#
-{1,table.tb}
+{Books,/db/table.tb}
+{COMP_1,/db/COMP_1.tb}

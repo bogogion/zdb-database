@@ -62,6 +62,53 @@ table_header parse_table_header_line(char line[],size_t size)
 	return theader;
 }
 
+data_file gen_db_file(char file_name[])
+{
+	/* Read data from .db file */
+
+	FILE *file;
+	file = fopen(file_name,"r");
+
+	data_file db_file;
+
+	char line[255];
+
+	char temp_token[255];
+	int cur_token = 0;
+
+	int j = 0;
+	while(fgets(line,255,file))
+	{	
+		db_file.vals++;
+		for(int i = 0;i<strlen(line);i++)
+		{
+			if(line[i] == '{'){ continue; }
+			if(line[i] == '}')
+			{
+				strcpy(db_file.file_paths[cur_token],temp_token);
+				memset(temp_token,0,sizeof(temp_token));
+				j = 0;
+				break;
+			}
+			if(line[i] != ',')
+			{
+				temp_token[j] = line[i];
+				j++;
+			} 
+			else
+			{	
+				strcpy(db_file.db_names[cur_token], temp_token);
+				memset(temp_token,0,sizeof(temp_token));
+				j = 0;
+			}
+		}
+		cur_token++; /* Update only at end of loop */
+		memset(line,0,sizeof(line)); /* Just 2 be safe!! */
+	}
+	fclose(file);
+	return db_file;
+}
+
 table_data parse_table_data(char line[],size_t size)
 {
 	table_data tdata; /* Only one of these should be used if possible */
@@ -110,24 +157,6 @@ table_data parse_table_data(char line[],size_t size)
 
 	}
 	return tdata;
-}
-
-long check_id(char line[],size_t size)
-{	
-	/* Check the first element, which should always be ID and compare*/
-	long id;
-
-	/* Token is set to size to prevent a memory overflow vuln causing the program not to compile. */
-	char token[size];
-	for(int i = 1;i<size;i++)
-	{
-		if(line[i] != ',')
-		{
-			token[i-1] = line[i];
-		} else {
-			return atol(token);
-		}
-	}
 }
 
 int convert_val_usable(table_header theader,table_data *tdata, int no)
@@ -202,14 +231,17 @@ int main(int argc, char *argv[])
 	while(fgets(line, 255, file))
 	{
 		if(counter == 0){strcpy(lines[0],line);}
-		if(check_id(line,strlen(line)) == search_id){strcpy(lines[1],line); break;}
+
+		if(counter == search_id){strcpy(lines[1],line); break;}
 		counter++;
 	}
-
+	
 	/* Create a table header to parse data later on, the arguments for this should always
 	   be the first line of the table.
 	*/
 
+	data_file db_file = gen_db_file("db/database.db");
+	
 	table_header theader = parse_table_header_line(lines[0],strlen(lines[0]));
 	
 	/* Create a table data struct, both table_header and table_data defined in main.h */
@@ -223,12 +255,13 @@ int main(int argc, char *argv[])
 	convert_val_usable(theader,&tdata,3);
 
 	/* Print our data */
-
+	
 	printf("--- %s ---\n",theader.name);
 	printf("Book Id: %i\n",tdata.id);
 	printf("%s: %s\n",theader.val_names[0],tdata.last_read_string);
 	printf("%s: $%.6g\n",theader.val_names[1],(tdata.last_read_double));
 	printf("%s: %i\n",theader.val_names[2],(tdata.last_read_int));
+	
 	fclose(file);
 	return 0;
 }
