@@ -7,16 +7,20 @@ Written solely by Zane Maples
 - ID search
 - Complete type-casting abilities by using the table header
 - Usable data parsed from a single string in the table file
+- .db file to host multiple tables
+- Reusable code via the header file
+- Ability to create datapoints
 
 ### Planned Features (in order)
-1. .db Files to manage .tb files (tables)
-2. Write code to generate tables and entries
-3. Indexing via primary keys
-4. Convert functions to usable header files to import into other programs
-5. Write a complete example program to manage databases
-6. Search optimization and complete testing with current configurations (sizes)
-7. Allow for dynamic allocation of elements (similar feature to SQL where you are able to create fields of a defined size)
-8. Finishing polish and tweaks
+1. ~~.db Files to manage .tb files (tables)~~
+2. ~~Write code to generate tables and entries~~
+3. Change specific values 
+4. Indexing via primary keys
+5. Convert functions to usable header files to import into other programs
+6. Write a complete example program to manage databases
+7. Search optimization and complete testing with current configurations (sizes)
+8. Allow for dynamic allocation of elements (similar feature to SQL where you are able to create fields of a defined size)
+9. Finishing polish and tweaks
 
 ### How it works
 Code is located in the /code directory
@@ -52,3 +56,6 @@ For information on how to parse and use this data see the main.c main() where th
 
 **HOW TO USE PROGRAM**
 Once you have compiled the program via make do ./zdb -i #id. ie. ./zdb -i 4 for the 4th value.
+
+## Examples
+For examples, check out the code in code/ and code/tests. All code documented (could be slightly better) in main.h
