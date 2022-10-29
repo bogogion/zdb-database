@@ -207,6 +207,33 @@ long get_max_id(char file_name[])
 	return ids-2; /* Top line to be ignored*/
 }
 
+char * gen_str_from_tdata(table_data tdata,table_header theader,char line[2560])
+{ 	
+	*line = '{'; /* Proper start of string */
+
+	char id[20];
+	snprintf(id,20,"%lld",tdata.id);
+	unsigned int vals = theader.vals;
+
+	char temp_token[255];
+
+	/* Assign ID */
+	strcat(line,id);
+	strcat(line,",");
+	for(int i = 0;i<vals;i++)
+	{
+		strcpy(temp_token,tdata.values[i]);
+		strcat(line,temp_token);
+
+		if(i+1 != vals){ strcat(line,","); }
+		
+		memset(temp_token,0,sizeof(temp_token));
+	}
+	strcat(line,"}");
+	printf("%s\n",line);
+	return line;
+}
+
 int main(int argc, char *argv[])
 {
 	long search_id = 1; /* Default id */
@@ -249,6 +276,9 @@ int main(int argc, char *argv[])
 	table_data tdata = parse_table_data(lines[1],strlen(lines[1]));
 	
 	/* Convert values to usable types (type casting)*/
+	char gen_line[2560];
+	//gen_line[0] = '{';
+	printf("NEW %s\n",gen_str_from_tdata(tdata,theader,gen_line));
 
 	convert_val_usable(theader,&tdata,1);
 	convert_val_usable(theader,&tdata,2);

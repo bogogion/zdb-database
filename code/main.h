@@ -29,3 +29,4 @@ int convert_val_usable(table_header theader,table_data *tdata, int no);
 table_data parse_table_data(char line[],size_t size);
 long get_max_id(char file_name[]);
 data_file gen_db_file(char file_name[]);
+char * gen_str_from_tdata(table_data tdata,table_header theader,char line[2560]);
